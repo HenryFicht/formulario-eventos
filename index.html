@@ -1057,32 +1057,45 @@
         }
 
         function handleLayoutChange() {
-            const selectedLayout = document.querySelector('input[name="layout"]:checked').value;
+            const selectedLayout = document.querySelector('input[name="layout"]:checked');
+            
+            if (!selectedLayout) return; // Sai se nenhum layout foi selecionado
+            
+            const layoutValue = selectedLayout.value;
             const uOptions = document.getElementById('uLayoutOptions');
             const outroOptions = document.getElementById('outroLayoutOptions');
             
-            // Esconde ambos inicialmente
+            // Esconde ambas as seções
             uOptions.style.display = 'none';
             outroOptions.style.display = 'none';
             
-            // ✅ Remove 'required' de campos do formato U
-            document.querySelector('input[name="uLayoutCapacity"]').required = false;
-            document.querySelector('input[name="uHeadCapacity"]').required = false;
-            document.querySelector('textarea[name="customLayout"]').required = false;
+            // Campos do formato U
+            const uLayoutCapacity = document.querySelector('input[name="uLayoutCapacity"]');
+            const uHeadCapacity = document.querySelector('input[name="uHeadCapacity"]');
+            const uLayoutRadios = document.querySelectorAll('input[name="uLayout"]');
             
-            // Remove seleção dos radio buttons do formato U
-            document.querySelectorAll('input[name="uLayout"]').forEach(r => r.checked = false);
+            // Campo de outro layout
+            const customLayoutTextarea = document.querySelector('textarea[name="customLayout"]');
             
-            // Mostra apenas o selecionado
-            if (selectedLayout === 'formato-u') {
+            // Remove required de TODOS os campos condicionais
+            uLayoutCapacity.required = false;
+            uHeadCapacity.required = false;
+            customLayoutTextarea.required = false;
+            
+            // Limpa valores e seleções
+            uLayoutCapacity.value = '';
+            uHeadCapacity.value = '';
+            customLayoutTextarea.value = '';
+            uLayoutRadios.forEach(r => r.checked = false);
+            
+            // Mostra e torna obrigatório apenas o selecionado
+            if (layoutValue === 'formato-u') {
                 uOptions.style.display = 'block';
-                // ✅ Adiciona 'required' apenas quando visível
-                document.querySelector('input[name="uLayoutCapacity"]').required = true;
-                document.querySelector('input[name="uHeadCapacity"]').required = true;
-            } else if (selectedLayout === 'outro') {
+                uLayoutCapacity.required = true;
+                uHeadCapacity.required = true;
+            } else if (layoutValue === 'outro') {
                 outroOptions.style.display = 'block';
-                // ✅ Adiciona 'required' apenas quando visível
-                document.querySelector('textarea[name="customLayout"]').required = true;
+                customLayoutTextarea.required = true;
             }
         }
 
@@ -1365,6 +1378,11 @@
             generateCoffeeItems();
             addProgramaRow(); // Adiciona uma linha inicial
             
+            // Garante que campos condicionais comecem sem required
+            document.querySelector('input[name="uLayoutCapacity"]').required = false;
+            document.querySelector('input[name="uHeadCapacity"]').required = false;
+            document.querySelector('textarea[name="customLayout"]').required = false;
+            
             // Gera recursos humanos e materiais gráficos quando selecionados
             document.addEventListener('change', function(e) {
                 if (e.target.name === 'humanResourcesMode' && e.target.checked && e.target.value === 'sim') {
@@ -1379,6 +1397,13 @@
         document.getElementById('eventForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             console.log('1. Submit iniciado');
+
+            const layoutSelected = document.querySelector('input[name="layout"]:checked');
+            if (!layoutSelected) {
+                alert('Por favor, selecione um Layout do Público');
+                document.querySelector('input[name="layout"]').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
             
             const submitButton = this.querySelector('button[type=submit]');
             const originalText = submitButton.textContent;

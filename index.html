@@ -606,7 +606,7 @@
                         </div>
                     </div>
                     <div id="customVenueField" style="display: none; margin-top: 15px;">
-                        <textarea name="min-height: 80px; width: 100%;" placeholder="Cite os local(is) definidos para orçar, seja um ou mais"></textarea>
+                        <textarea name="customVenues" style="min-height: 80px; width: 100%;" placeholder="Cite os local(is) definidos para orçar, seja um ou mais"></textarea>
                     </div>
                     <div id="indefinidoVenueField" style="display: none; margin-top: 15px;">
                         <textarea name="indefinidoVenues" placeholder="Descreva características do local desejado (tamanho, localização, recursos necessários, etc.)" style="min-height: 80px; width: 100%;"></textarea>
@@ -1013,9 +1013,15 @@
             if (agendaType === 'com-agenda') {
                 withDates.style.display = 'block';
                 justBudget.style.display = 'none';
+                // Adiciona required ao select principal de dias
+                withDates.querySelector('select[name="eventDays"]').required = true;
             } else {
                 withDates.style.display = 'none';
                 justBudget.style.display = 'block';
+                // Remove required de todos os campos de data gerados e do select
+                withDates.querySelector('select[name="eventDays"]').required = false;
+                const inputs = withDates.querySelectorAll('input');
+                inputs.forEach(input => input.required = false);
             }
         }
 
@@ -1058,41 +1064,29 @@
 
         function handleLayoutChange() {
             const selectedLayout = document.querySelector('input[name="layout"]:checked');
-            
-            if (!selectedLayout) return; // Sai se nenhum layout foi selecionado
+            if (!selectedLayout) return;
             
             const layoutValue = selectedLayout.value;
             const uOptions = document.getElementById('uLayoutOptions');
             const outroOptions = document.getElementById('outroLayoutOptions');
             
-            // Esconde ambas as seções
+            // Esconde seções
             uOptions.style.display = 'none';
             outroOptions.style.display = 'none';
             
-            // Campos do formato U
-            const uLayoutCapacity = document.querySelector('input[name="uLayoutCapacity"]');
-            const uHeadCapacity = document.querySelector('input[name="uHeadCapacity"]');
-            const uLayoutRadios = document.querySelectorAll('input[name="uLayout"]');
-            
-            // Campo de outro layout
+            // Seleciona todos os campos que podem ser obrigatórios
+            const uInputs = uOptions.querySelectorAll('input');
             const customLayoutTextarea = document.querySelector('textarea[name="customLayout"]');
             
-            // Remove required de TODOS os campos condicionais
-            uLayoutCapacity.required = false;
-            uHeadCapacity.required = false;
+            // Reseta TUDO para não obrigatório primeiro
+            uInputs.forEach(input => input.required = false);
             customLayoutTextarea.required = false;
             
-            // Limpa valores e seleções
-            uLayoutCapacity.value = '';
-            uHeadCapacity.value = '';
-            customLayoutTextarea.value = '';
-            uLayoutRadios.forEach(r => r.checked = false);
-            
-            // Mostra e torna obrigatório apenas o selecionado
             if (layoutValue === 'formato-u') {
                 uOptions.style.display = 'block';
-                uLayoutCapacity.required = true;
-                uHeadCapacity.required = true;
+                document.querySelector('input[name="uLayoutCapacity"]').required = true;
+                document.querySelector('input[name="uHeadCapacity"]').required = true;
+                // O campo assessmentTableCapacity só será required se a função toggleAssessmentTable for chamada
             } else if (layoutValue === 'outro') {
                 outroOptions.style.display = 'block';
                 customLayoutTextarea.required = true;
@@ -1395,6 +1389,14 @@
         });
 
         document.getElementById('eventForm').addEventListener('submit', async function(e) {
+            // PREVENÇÃO DE ERROS: Remove required de campos ocultos antes de validar
+            const allRequiredInputs = this.querySelectorAll('[required]');
+            allRequiredInputs.forEach(input => {
+                if (input.offsetWidth === 0 || input.offsetHeight === 0 || input.closest(':hidden')) {
+                    input.required = false;
+                }
+            });
+            
             e.preventDefault();
             console.log('1. Submit iniciado');
 

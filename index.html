@@ -1339,31 +1339,7 @@
             `;
             list.appendChild(item);
         }
-/*
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Coleta dados do formulário
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-            
-            // Simula envio
-            console.log('Dados do formulário:', data);
-            
-            // Mostra mensagem de sucesso
-            successMessage.classList.add('show');
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 5000);
-            
-            // Reseta o formulário após 1 segundo
-            setTimeout(() => {
-                form.reset();
-                toggleCoffeeBreak();
-                window.scrollTo(0, 0);
-            }, 1000);
-        }); 
-*/
+
         // Inicializa estado do coffee break na primeira carga
         document.addEventListener('DOMContentLoaded', function() {
             toggleCoffeeBreak();

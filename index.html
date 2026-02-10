@@ -1065,11 +1065,24 @@
             uOptions.style.display = 'none';
             outroOptions.style.display = 'none';
             
+            // ✅ Remove 'required' de campos do formato U
+            document.querySelector('input[name="uLayoutCapacity"]').required = false;
+            document.querySelector('input[name="uHeadCapacity"]').required = false;
+            document.querySelector('textarea[name="customLayout"]').required = false;
+            
+            // Remove seleção dos radio buttons do formato U
+            document.querySelectorAll('input[name="uLayout"]').forEach(r => r.checked = false);
+            
             // Mostra apenas o selecionado
             if (selectedLayout === 'formato-u') {
                 uOptions.style.display = 'block';
+                // ✅ Adiciona 'required' apenas quando visível
+                document.querySelector('input[name="uLayoutCapacity"]').required = true;
+                document.querySelector('input[name="uHeadCapacity"]').required = true;
             } else if (selectedLayout === 'outro') {
                 outroOptions.style.display = 'block';
+                // ✅ Adiciona 'required' apenas quando visível
+                document.querySelector('textarea[name="customLayout"]').required = true;
             }
         }
 
@@ -1080,9 +1093,12 @@
 
         function clearCustomVenue() {
             document.getElementById('customVenueField').style.display = 'none';
-            document.querySelector('textarea[name="customVenues"]').value = '';
+            const textarea = document.querySelector('textarea[name="customVenues"]');
+            if (textarea) {  // ✅ Verifica se existe antes de limpar
+                textarea.value = '';
+            }
         }
-
+        
         function showIndefinidoVenue() {
             document.getElementById('indefinidoVenueField').style.display = 'block';
             document.getElementById('customVenueField').style.display = 'none';
@@ -1090,7 +1106,10 @@
 
         function clearIndefinidoVenue() {
             document.getElementById('indefinidoVenueField').style.display = 'none';
-            document.querySelector('textarea[name="indefinidoVenues"]').value = '';
+            const textarea = document.querySelector('textarea[name="indefinidoVenues"]');
+            if (textarea) {  // ✅ Verifica se existe antes de limpar
+                textarea.value = '';
+            }
         }
 
         function addCoffeeBreakTime() {
@@ -1388,7 +1407,7 @@
             
             try {
                 console.log('4. Iniciando fetch...');
-                const response = await fetch('SUA_URL_DO_N8N', {
+                const response = await fetch('https://webhook.munaservices.com.br/webhook/forms-eventos-caurs', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

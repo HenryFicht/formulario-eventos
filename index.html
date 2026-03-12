@@ -1430,9 +1430,9 @@
             console.log('2. Dados processados:', data);
         
             try {
-                // 5. ENVIO PARA O N8N
-                const webhookURL = 'https://webhook.munaservices.com.br/webhook/forms-eventos-caurs';
-                
+                // 5. ENVIA PARA O PROXY DA VERCEL (Ocultando o n8n)
+                const webhookURL = '/api/proxy'
+            
                 const response = await fetch(webhookURL, {
                     method: 'POST',
                     headers: {
@@ -1441,7 +1441,7 @@
                     },
                     body: JSON.stringify(data)
                 });
-        
+            
                 console.log('3. Status da resposta:', response.status);
         
                 if (response.ok) {

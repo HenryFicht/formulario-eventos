@@ -632,7 +632,7 @@
                 </div>
 
                 <!-- SEÇÃO 5: RECURSOS E EQUIPAMENTOS -->
-                <div class="section">
+<div class="section">
                     <h2 class="section-title"><span class="section-icon">⚙️</span>Recursos e Equipamentos</h2>
 
                     <div class="form-group full">
@@ -641,38 +641,44 @@
 
                     <div class="checkbox-group" style="margin-bottom: 20px;">
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipment" value="projetor-tela" id="eq-projetor">
+                            <input type="checkbox" name="equipment" value="projetor-tela" id="eq-projetor" onchange="uncheckNenhum(this)">
                             <label for="eq-projetor" class="checkbox-label">
                                 <strong>Projetor + Tela</strong>
                                 <span class="helper-text">Para apresentações em PowerPoint/slides</span>
                             </label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipment" value="sonorizacao" id="eq-audio">
+                            <input type="checkbox" name="equipment" value="sonorizacao" id="eq-audio" onchange="toggleSonorizacao()">
                             <label for="eq-audio" class="checkbox-label">
                                 <strong>Sonorização (Caixas de Som + Mesa de Som)</strong>
                                 <span class="helper-text">Amplificação de áudio</span>
                             </label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipment" value="iluminacao" id="eq-iluminacao">
+                            <input type="checkbox" name="equipment" value="iluminacao" id="eq-iluminacao" onchange="uncheckNenhum(this)">
                             <label for="eq-iluminacao" class="checkbox-label">
                                 <strong>Iluminação Especial</strong>
                                 <span class="helper-text">Para palco/apresentações</span>
                             </label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipment" value="gravacao" id="eq-gravacao" onchange="toggleRecordingOptions()">
+                            <input type="checkbox" name="equipment" value="gravacao" id="eq-gravacao" onchange="toggleRecordingOptions(); uncheckNenhum(this)">
                             <label for="eq-gravacao" class="checkbox-label">
                                 <strong>Equipamento de Gravação/Transmissão</strong>
                                 <span class="helper-text">Aparelho Videoconferência CAU, câmeras, microfones profissionais, etc.</span>
                             </label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" name="equipment" value="acesso-internet" id="eq-internet" onchange="toggleInternetOptions()">
+                            <input type="checkbox" name="equipment" value="acesso-internet" id="eq-internet" onchange="toggleInternetOptions(); uncheckNenhum(this)">
                             <label for="eq-internet" class="checkbox-label">
                                 <strong>Acesso a Internet</strong>
                                 <span class="helper-text">Para transmissão e conectividade</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);">
+                            <input type="checkbox" name="equipment" value="nenhum" id="eq-nenhum" onchange="toggleNenhumEquipamento()">
+                            <label for="eq-nenhum" class="checkbox-label" style="color: var(--text-muted);">
+                                <strong>Nenhum dos Itens acima</strong>
                             </label>
                         </div>
                     </div>
@@ -723,8 +729,8 @@
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Quantidade de Microfones <span class="required">*</span></label>
-                            <input type="number" name="microphones" placeholder="Ex: 3" min="0" required>
+                            <label>Quantidade de Microfones <span class="required" id="mic-asterisk" style="display: none;">*</span></label>
+                            <input type="number" name="microphones" id="microphonesInput" placeholder="Ex: 3" min="0">
                             <div class="helper-text">De mão, lapela, estande, etc.</div>
                         </div>
                     </div>
@@ -1298,6 +1304,48 @@
                 
                 coffeeItemsList.appendChild(div);
             });
+        }
+
+        function toggleSonorizacao() {
+            const audioCheckbox = document.getElementById('eq-audio');
+            const micInput = document.getElementById('microphonesInput');
+            const micAsterisk = document.getElementById('mic-asterisk');
+
+            if (audioCheckbox.checked) {
+                // Torna microfones obrigatório
+                micInput.required = true;
+                micAsterisk.style.display = 'inline';
+                uncheckNenhum(audioCheckbox); // Desmarca a opção "Nenhum"
+            } else {
+                // Remove obrigatoriedade
+                micInput.required = false;
+                micAsterisk.style.display = 'none';
+                micInput.value = ''; // Limpa o campo
+            }
+        }
+
+        function toggleNenhumEquipamento() {
+            const nenhumCheckbox = document.getElementById('eq-nenhum');
+            
+            if (nenhumCheckbox.checked) {
+                // Desmarca todas as outras opções de equipamentos
+                document.querySelectorAll('input[name="equipment"]').forEach(cb => {
+                    if (cb.id !== 'eq-nenhum' && cb.checked) {
+                        cb.checked = false;
+                        // Aciona os gatilhos para esconder submenus e limpar campos obrigatórios
+                        if (cb.id === 'eq-audio') toggleSonorizacao();
+                        if (cb.id === 'eq-gravacao') toggleRecordingOptions();
+                        if (cb.id === 'eq-internet') toggleInternetOptions();
+                    }
+                });
+            }
+        }
+
+        function uncheckNenhum(changedElement) {
+            // Se o usuário marcar qualquer equipamento, a caixa "Nenhum" deve ser desmarcada
+            if (changedElement && changedElement.checked) {
+                document.getElementById('eq-nenhum').checked = false;
+            }
         }
 
         function toggleRecordingOptions() {

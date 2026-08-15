@@ -433,10 +433,14 @@
                         </div>
                     </div>
                     
-                    <div class="form-grid full" style="margin-top: 20px;">
+                    <div class="form-grid" style="margin-top: 20px;">
                         <div class="form-group">
                             <label>Centro de Custo <span class="required">*</span></label>
-                            <input type="text" name="costCenter" placeholder="Inserir Centro de Custo do Evento" required>
+                            <textarea name="costCenter" placeholder="Inserir Centro de Custo do Evento" required style="min-height: 56px; resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Conta <span class="required">*</span></label>
+                            <textarea name="account" placeholder="Inserir Conta do Evento" required style="min-height: 56px; resize: vertical;"></textarea>
                         </div>
                     </div>
 
@@ -802,8 +806,11 @@
                             <!-- Será preenchido dinamicamente por JavaScript -->
                         </div>
 
-                        <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; border-left: 3px solid #dc2626; margin-bottom: 20px; font-size: 13px; font-weight: 500;">
+                        <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; border-left: 3px solid #dc2626; margin-bottom: 8px; font-size: 13px; font-weight: 500;">
                             ⚠️ Itens disponibilizados conforme estoque
+                        </div>
+                        <div style="margin-bottom: 20px; font-size: 13px;">
+                            <a href="https://www.appsheet.com/start/8748e1b4-0e20-4eb0-993c-d67666f30b7b" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">📦 Consultar Estoque <span style="text-decoration: underline;">clique aqui</span></a>
                         </div>
 
                         <div class="form-group full">
@@ -1173,6 +1180,8 @@
                 {id: 'tecnico-som', nome: 'Técnico de Som', descricao: 'operador de mesa de som. Diária de 8h'},
                 {id: 'tecnico-video', nome: 'Técnico de Vídeo', descricao: 'operador de tela e projetor. Diária de 8h'},
                 {id: 'agente-limpeza', nome: 'Agente de Limpeza', descricao: 'diária de 6h'},
+                {id: 'fotografo', nome: 'Fotógrafo', descricao: 'Diária'},
+                {id: 'palestrante-mediador-guia', nome: 'Palestrante/Mediador/Guia', descricao: 'Pago até R$ 450,00 por unidade de cachê'},
             ];
 
             list.innerHTML = '';
